@@ -1,6 +1,6 @@
 # ResNet
 
-Ikomia plugin to launch inference on ResNet classification model. Inference can be made from pre-trained model on ImageNet dataset or from custom trained model. Indeed you can use the [Ikomia ResNextTrain plugin](https://github.com/Ikomia-dev/ResNetTrain) to make the training. This plugin is based on [PyTorch torchvision implementation](https://github.com/pytorch/vision).
+Ikomia plugin to launch inference on ResNet classification model. Inference can be made from pre-trained model on ImageNet dataset or from custom trained model. Indeed you can use the [Ikomia ResNetTrain plugin](https://github.com/Ikomia-dev/ResNetTrain) to make the training. This plugin is based on [PyTorch torchvision implementation](https://github.com/pytorch/vision).
 
 ### How to use it?
 Here are the steps:
