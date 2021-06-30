@@ -1,6 +1,4 @@
 from ikomia import dataprocess
-import ResNet_process as processMod
-import ResNet_widget as widgetMod
 
 
 # --------------------
@@ -14,8 +12,10 @@ class ResNet(dataprocess.CPluginProcessInterface):
 
     def getProcessFactory(self):
         # Instantiate process object
-        return processMod.ResNetProcessFactory()
+        from ResNet.ResNet_process import ResNetProcessFactory
+        return ResNetProcessFactory()
 
     def getWidgetFactory(self):
         # Instantiate associated widget object
-        return widgetMod.ResNetWidgetFactory()
+        from ResNet.ResNet_widget import ResNetWidgetFactory
+        return ResNetWidgetFactory()
