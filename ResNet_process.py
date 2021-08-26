@@ -2,7 +2,6 @@ from ikomia import core, dataprocess
 from ikomia.dnn.torch import models
 import os
 import copy
-# Your imports below
 import cv2
 import torch
 import torchvision.transforms as transforms
@@ -62,7 +61,7 @@ class ResNetProcess(dataprocess.C2dImageTask):
         # Add graphics output
         self.addOutput(dataprocess.CGraphicsOutput())
         # Add numeric output
-        self.addOutput(dataprocess.CDblFeatureIO())
+        self.addOutput(dataprocess.CNumericIO())
 
         # Create parameters class
         if param is None:
