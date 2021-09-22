@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 # - Class to handle the process parameters
 # - Inherits core.CProtocolTaskParam from Ikomia API
 # --------------------
-class ResNetParam(core.CWorkflowTaskParam):
+class ResnetParam(core.CWorkflowTaskParam):
 
     def __init__(self):
         core.CWorkflowTaskParam.__init__(self)
@@ -48,7 +48,7 @@ class ResNetParam(core.CWorkflowTaskParam):
 # - Class which implements the process
 # - Inherits core.CProtocolTask or derived from Ikomia API
 # --------------------
-class ResNetProcess(dataprocess.C2dImageTask):
+class Resnet(dataprocess.C2dImageTask):
 
     def __init__(self, name, param):
         dataprocess.C2dImageTask.__init__(self, name)
@@ -65,7 +65,7 @@ class ResNetProcess(dataprocess.C2dImageTask):
 
         # Create parameters class
         if param is None:
-            self.setParam(ResNetParam())
+            self.setParam(ResnetParam())
         else:
             self.setParam(copy.deepcopy(param))
 
@@ -165,12 +165,12 @@ class ResNetProcess(dataprocess.C2dImageTask):
 # - Factory class to build process object
 # - Inherits dataprocess.CProcessFactory from Ikomia API
 # --------------------
-class ResNetProcessFactory(dataprocess.CTaskFactory):
+class ResnetFactory(dataprocess.CTaskFactory):
 
     def __init__(self):
         dataprocess.CTaskFactory.__init__(self)
         # Set process information as string here
-        self.info.name = "ResNet"
+        self.info.name = "infer_torchvision_resnet"
         self.info.shortDescription = "ResNet inference model for image classification."
         self.info.description = "ResNet inference model for image classification. " \
                                 "Implementation from PyTorch torchvision package. " \
@@ -193,4 +193,4 @@ class ResNetProcessFactory(dataprocess.CTaskFactory):
 
     def create(self, param=None):
         # Create process object
-        return ResNetProcess(self.info.name, param)
+        return Resnet(self.info.name, param)
