@@ -151,7 +151,7 @@ class Resnet(dataprocess.C2dImageTask):
                                        use_pretrained=use_torchvision,
                                        classes=len(self.class_names))
             if param.dataset == "Custom":
-                self.model.load_state_dict(torch.load(param.model_path))
+                self.model.load_state_dict(torch.load(param.model_path, map_location=self.device))
 
             self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in self.class_names]
             self.model.to(self.device)
@@ -258,7 +258,7 @@ class ResnetFactory(dataprocess.CTaskFactory):
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Classification"
         self.info.iconPath = "icons/pytorch-logo.png"
-        self.info.version = "1.1.0"
+        self.info.version = "1.1.1"
         self.info.keywords = "residual,cnn,classification"
 
     def create(self, param=None):
