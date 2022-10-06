@@ -95,7 +95,7 @@ class Resnet(dataprocess.C2dImageTask):
             w = width - x - 1
         if y < 0:
             y = 0
-        if x + h >= height:
+        if y + h >= height:
             h = height - y - 1
 
         if w < 2 or h < 2:
@@ -258,7 +258,7 @@ class ResnetFactory(dataprocess.CTaskFactory):
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Classification"
         self.info.iconPath = "icons/pytorch-logo.png"
-        self.info.version = "1.1.1"
+        self.info.version = "1.1.2"
         self.info.keywords = "residual,cnn,classification"
 
     def create(self, param=None):
