@@ -58,10 +58,10 @@ class Resnet(dataprocess.C2dImageTask):
         self.class_names = []
         # Detect if we have a GPU available
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        # Add graphics output
+        # Output for object classification
+        self.addOutput(dataprocess.CObjectDetectionIO())
+        # Outputs for whole image classification
         self.addOutput(dataprocess.CGraphicsOutput())
-        # Add numeric outputs
-        self.addOutput(dataprocess.CBlobMeasureIO())
         self.addOutput(dataprocess.CDataStringIO())
 
         # Create parameters class
@@ -157,16 +157,6 @@ class Resnet(dataprocess.C2dImageTask):
             self.model.to(self.device)
             param.update = False
 
-        # Prepare outputs
-        graphics_output = self.getOutput(1)
-        graphics_output.setNewLayer("ResNet")
-        graphics_output.setImageIndex(0)
-        table_output1 = self.getOutput(2)
-        table_output1.clearData()
-        table_output2 = self.getOutput(3)
-        table_output2.setOutputType(dataprocess.NumericOutputType.TABLE)
-        table_output2.clearData()
-
         objects_to_classify = []
         if graphics_in.isDataAvailable():
             for item in graphics_in.getItems():
@@ -174,6 +164,8 @@ class Resnet(dataprocess.C2dImageTask):
                     objects_to_classify.append(item)
 
         if len(objects_to_classify) > 0:
+            obj_detect_io = self.getOutput(1)
+
             for obj in objects_to_classify:
                 # Inference
                 rc = obj.getBoundingRect()
@@ -184,32 +176,16 @@ class Resnet(dataprocess.C2dImageTask):
 
                 pred = self.predict(crop_img, param.input_size)
                 class_index = pred.argmax()
-                # Box
-                prop_rect = core.GraphicsRectProperty()
-                prop_rect.pen_color = self.colors[class_index]
-                graphics_box = graphics_output.addRectangle(rc[0], rc[1], rc[2], rc[3], prop_rect)
-                graphics_box.setCategory(self.class_names[class_index])
-                # Label
-                prop_text = core.GraphicsTextProperty()
-                prop_text.font_size = 10
-                prop_text.color = self.colors[class_index]
-                graphics_output.addText(self.class_names[class_index], rc[0], rc[1], prop_text)
-                # Object results
-                results = []
-                confidence_data = dataprocess.CObjectMeasure(
-                    dataprocess.CMeasure(core.MeasureId.CUSTOM, "Confidence"),
-                    pred[class_index].item(),
-                    graphics_box.getId(),
-                    self.class_names[class_index])
-                box_data = dataprocess.CObjectMeasure(
-                    dataprocess.CMeasure(core.MeasureId.BBOX),
-                    rc,
-                    graphics_box.getId(),
-                    self.class_names[class_index])
-                results.append(confidence_data)
-                results.append(box_data)
-                table_output1.addObjectMeasures(results)
+                obj_detect_io.addObject(obj.getId(), self.class_names[class_index], pred[class_index].item(),
+                                        rc[0], rc[1], rc[2], rc[3], self.colors[class_index])
         else:
+            graphics_output = self.getOutput(2)
+            graphics_output.setNewLayer("ResNet")
+            graphics_output.setImageIndex(0)
+            table_output = self.getOutput(3)
+            table_output.setOutputType(dataprocess.NumericOutputType.TABLE)
+            table_output.clearData()
+
             pred = self.predict(src_image, param.input_size)
             # Set graphics output
             class_index = pred.argmax()
@@ -219,7 +195,7 @@ class Resnet(dataprocess.C2dImageTask):
             sorted_data = sorted(zip(pred.flatten().tolist(), self.class_names), reverse=True)
             confidences = [str(conf) for conf, _ in sorted_data]
             names = [name for _, name in sorted_data]
-            table_output2.addValueList(confidences, "Confidence", names)
+            table_output.addValueList(confidences, "Confidence", names)
 
         # Step progress bar:
         self.emitStepProgress()
@@ -258,7 +234,7 @@ class ResnetFactory(dataprocess.CTaskFactory):
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Classification"
         self.info.iconPath = "icons/pytorch-logo.png"
-        self.info.version = "1.1.2"
+        self.info.version = "1.2.0"
         self.info.keywords = "residual,cnn,classification"
 
     def create(self, param=None):
