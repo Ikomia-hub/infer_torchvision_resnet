@@ -52,7 +52,7 @@ class ResnetWidget(core.CWorkflowTaskWidget):
         layout_ptr = qtconversion.PyQtToQt(self.grid_layout)
 
         # Set widget layout
-        self.setLayout(layout_ptr)
+        self.set_layout(layout_ptr)
 
     def _get_model_name_index(self):
         if self.parameters.model_name == "resnet18":
@@ -86,7 +86,7 @@ class ResnetWidget(core.CWorkflowTaskWidget):
             self.browse_classes.clear()
             self.browse_classes.setEnabled(True)
 
-    def onApply(self):
+    def on_apply(self):
         # Apply button clicked slot
         # Get parameters from widget
         self.parameters.update = True
@@ -97,7 +97,7 @@ class ResnetWidget(core.CWorkflowTaskWidget):
         self.parameters.classes_path = self.browse_classes.path
 
         # Send signal to launch the process
-        self.emitApply(self.parameters)
+        self.emit_apply(self.parameters)
 
 
 # --------------------
