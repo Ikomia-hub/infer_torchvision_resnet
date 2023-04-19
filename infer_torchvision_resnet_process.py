@@ -16,6 +16,7 @@ class ResnetParam(core.CWorkflowTaskParam):
     def __init__(self):
         core.CWorkflowTaskParam.__init__(self)
         # Place default value initialization here
+        self.model_name_or_path = ""
         self.model_name = 'resnet18'
         self.dataset = 'ImageNet'
         self.input_size = 224
@@ -26,6 +27,7 @@ class ResnetParam(core.CWorkflowTaskParam):
     def set_values(self, params):
         # Set parameters values from Ikomia application
         # Parameters values are stored as string and accessible like a python dict
+        self.model_name_or_path = params["model_name_or_path"]
         self.model_name = params["model_name"]
         self.dataset = params["dataset"]
         self.input_size = int(params["input_size"])
@@ -35,11 +37,13 @@ class ResnetParam(core.CWorkflowTaskParam):
     def get_values(self):
         # Send parameters values to Ikomia application
         # Create the specific dict structure (string container)
-        params = {"model_name": self.model_name,
-                  "dataset": self.dataset,
-                  "input_size": str(self.input_size),
-                  "model_path": self.model_path,
-                  "classes_path": self.classes_path}
+        params = {
+                "model_name_or_path": self.model_name_or_path,
+                "model_name": self.model_name,
+                "dataset": self.dataset,
+                "input_size": str(self.input_size),
+                "model_path": self.model_path,
+                "classes_path": self.classes_path}
         return params
 
 
@@ -100,6 +104,13 @@ class Resnet(dataprocess.CClassificationTask):
             # Load class names
             self.read_class_names(param.classes_path)
             # Load model
+            if param.model_name_or_path != "":
+                if os.path.isfile(param.model_name_or_path):
+                    param.dataset = "Custom"
+                    param.model_path = param.model_name_or_path
+                else:
+                    param.model_name = param.model_name_or_path
+
             use_torchvision = param.dataset != "Custom"
             self.model = models.resnet(model_name=param.model_name,
                                        use_pretrained=use_torchvision,
