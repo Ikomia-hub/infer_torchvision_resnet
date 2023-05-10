@@ -21,7 +21,7 @@ class ResnetParam(core.CWorkflowTaskParam):
         self.dataset = 'ImageNet'
         self.input_size = 224
         self.model_path = ''
-        self.classes_path = os.path.dirname(os.path.realpath(__file__)) + "/models/imagenet_classes.txt"
+        self.class_file = os.path.dirname(os.path.realpath(__file__)) + "/models/imagenet_classes.txt"
         self.update = False
 
     def set_values(self, params):
@@ -32,7 +32,7 @@ class ResnetParam(core.CWorkflowTaskParam):
         self.dataset = params["dataset"]
         self.input_size = int(params["input_size"])
         self.model_path = params["model_path"]
-        self.classes_path = params["classes_path"]
+        self.class_file = params["class_file"]
 
     def get_values(self):
         # Send parameters values to Ikomia application
@@ -43,7 +43,7 @@ class ResnetParam(core.CWorkflowTaskParam):
                 "dataset": self.dataset,
                 "input_size": str(self.input_size),
                 "model_path": self.model_path,
-                "classes_path": self.classes_path}
+                "class_file": self.class_file}
         return params
 
 
@@ -102,7 +102,7 @@ class Resnet(dataprocess.CClassificationTask):
         # Load model
         if self.model is None or param.update:
             # Load class names
-            self.read_class_names(param.classes_path)
+            self.read_class_names(param.class_file)
             # Load model
             if param.model_name_or_path != "":
                 if os.path.isfile(param.model_name_or_path):
