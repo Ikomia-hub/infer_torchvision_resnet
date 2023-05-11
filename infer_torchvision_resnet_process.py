@@ -16,33 +16,30 @@ class ResnetParam(core.CWorkflowTaskParam):
     def __init__(self):
         core.CWorkflowTaskParam.__init__(self)
         # Place default value initialization here
-        self.model_name_or_path = ""
         self.model_name = 'resnet18'
         self.dataset = 'ImageNet'
         self.input_size = 224
-        self.model_path = ''
+        self.model_weight_file = ''
         self.class_file = os.path.dirname(os.path.realpath(__file__)) + "/models/imagenet_classes.txt"
         self.update = False
 
     def set_values(self, params):
         # Set parameters values from Ikomia application
         # Parameters values are stored as string and accessible like a python dict
-        self.model_name_or_path = params["model_name_or_path"]
         self.model_name = params["model_name"]
         self.dataset = params["dataset"]
         self.input_size = int(params["input_size"])
-        self.model_path = params["model_path"]
+        self.model_weight_file = params["model_weight_file"]
         self.class_file = params["class_file"]
 
     def get_values(self):
         # Send parameters values to Ikomia application
         # Create the specific dict structure (string container)
         params = {
-                "model_name_or_path": self.model_name_or_path,
                 "model_name": self.model_name,
                 "dataset": self.dataset,
                 "input_size": str(self.input_size),
-                "model_path": self.model_path,
+                "model_weight_file": self.model_weight_file,
                 "class_file": self.class_file}
         return params
 
@@ -104,19 +101,16 @@ class Resnet(dataprocess.CClassificationTask):
             # Load class names
             self.read_class_names(param.class_file)
             # Load model
-            if param.model_name_or_path != "":
-                if os.path.isfile(param.model_name_or_path):
+            if param.model_weight_file != "":
+                if os.path.isfile(param.model_weight_file):
                     param.dataset = "Custom"
-                    param.model_path = param.model_name_or_path
-                else:
-                    param.model_name = param.model_name_or_path
 
             use_torchvision = param.dataset != "Custom"
             self.model = models.resnet(model_name=param.model_name,
                                        use_pretrained=use_torchvision,
                                        classes=len(self.get_names()))
             if param.dataset == "Custom":
-                self.model.load_state_dict(torch.load(param.model_path, map_location=self.device))
+                self.model.load_state_dict(torch.load(param.model_weight_file, map_location=self.device))
 
             self.model.to(self.device)
             param.update = False

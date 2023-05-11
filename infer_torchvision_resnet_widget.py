@@ -39,7 +39,7 @@ class ResnetWidget(core.CWorkflowTaskWidget):
 
         self.spin_size = pyqtutils.append_spin(self.grid_layout, label="Input size", value=self.parameters.input_size)
 
-        self.browse_model = pyqtutils.append_browse_file(self.grid_layout, "Model path", self.parameters.model_path)
+        self.browse_model = pyqtutils.append_browse_file(self.grid_layout, "Model path", self.parameters.model_weight_file)
 
         self.browse_classes = pyqtutils.append_browse_file(self.grid_layout, "Classes path", self.parameters.class_file)
 
@@ -93,7 +93,7 @@ class ResnetWidget(core.CWorkflowTaskWidget):
         self.parameters.model_name = self.combo_model.currentText()
         self.parameters.dataset = self.combo_dataset.currentText()
         self.parameters.input_size = self.spin_size.value()
-        self.parameters.model_path = self.browse_model.path
+        self.parameters.model_weight_file = self.browse_model.path
         self.parameters.class_file = self.browse_classes.path
 
         # Send signal to launch the process
