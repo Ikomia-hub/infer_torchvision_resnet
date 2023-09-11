@@ -19,10 +19,9 @@
     </a> 
 </p>
 
-ResNet inference model for image classification. Implementation from PyTorch torchvision package. This Ikomia plugin can make inference of pre-trained model from ImageNet dataset or custom trained model. Custom training can be made with the associated MaskRCNNTrain plugin from Ikomia marketplace. Different versions are available with 18, 34, 50, 101 or 152 layers.
+ResNet inference model for image classification. 
 
-[Insert illustrative image here. Image must be accessible publicly, in algorithm Github repository for example.
-<img src="images/illustration.png"  alt="Illustrative image" width="30%" height="30%">]
+![Cat classification](https://raw.githubusercontent.com/Ikomia-hub/infer_torchvision_resnet/main/icons/output.jpg)
 
 ## :rocket: Use with Ikomia API
 
@@ -36,11 +35,21 @@ pip install ikomia
 
 #### 2. Create your workflow
 
-[Change the sample image URL to fit algorithm purpose]
+- **model_name** (str) - default 'resnet18': Name of the pre-trained model. Additional ResNet size are available: 
+    - resnet18
+    - resnet34
+    - resnet50
+    - resnet101
+    - resnet152
+
+- **input_size** (int) - default '224': Size of the input image.
+- **model_weight_file** (str, *optional*): Path to model weights file.
+- **class_file** (str, , *optional*): Path to text file (.txt) containing class names. (If using a custom model)
+
 
 ```python
-import ikomia
 from ikomia.dataprocess.workflow import Workflow
+from ikomia.utils.displayIO import display
 
 # Init your workflow
 wf = Workflow()
@@ -48,8 +57,11 @@ wf = Workflow()
 # Add algorithm
 algo = wf.add_task(name="infer_torchvision_resnet", auto_connect=True)
 
-# Run on your image  
-wf.run_on(url="example_image.png")
+# Run directly on your image
+wf.run_on(url="https://raw.githubusercontent.com/Ikomia-dev/notebooks/main/examples/img/img_cat.jpg")
+
+# Inspect your result
+display(algo.get_image_with_graphics())
 ```
 
 ## :sunny: Use with Ikomia Studio
@@ -62,13 +74,9 @@ Ikomia Studio offers a friendly UI with the same features as the API.
 
 ## :pencil: Set algorithm parameters
 
-[Explain each algorithm parameters]
-
-[Change the sample image URL to fit algorithm purpose]
-
 ```python
-import ikomia
 from ikomia.dataprocess.workflow import Workflow
+from ikomia.utils.displayIO import display
 
 # Init your workflow
 wf = Workflow()
@@ -77,13 +85,11 @@ wf = Workflow()
 algo = wf.add_task(name="infer_torchvision_resnet", auto_connect=True)
 
 algo.set_parameters({
-    "param1": "value1",
-    "param2": "value2",
-    ...
+    "input_size": "224",
 })
 
-# Run on your image  
-wf.run_on(url="example_image.png")
+# Inspect your result
+display(algo.get_image_with_graphics())
 
 ```
 
@@ -102,16 +108,13 @@ wf = Workflow()
 algo = wf.add_task(name="infer_torchvision_resnet", auto_connect=True)
 
 # Run on your image  
-wf.run_on(url="example_image.png")
+wf.run_on(url="https://raw.githubusercontent.com/Ikomia-dev/notebooks/main/examples/img/img_cat.jpg")
 
 # Iterate over outputs
-for output in algo.get_outputs()
+for output in algo.get_outputs():
     # Print information
     print(output)
     # Export it to JSON
     output.to_json()
 ```
 
-## :fast_forward: Advanced usage 
-
-[optional]
