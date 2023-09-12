@@ -46,6 +46,7 @@ pip install ikomia
 - **model_weight_file** (str, *optional*): Path to model weights file.
 - **class_file** (str, , *optional*): Path to text file (.txt) containing class names. (If using a custom model)
 
+**Parameters** should be in **strings format**  when added to the dictionary.
 
 ```python
 from ikomia.dataprocess.workflow import Workflow
