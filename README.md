@@ -59,7 +59,7 @@ wf = Workflow()
 algo = wf.add_task(name="infer_torchvision_resnet", auto_connect=True)
 
 # Run directly on your image
-wf.run_on(url="https://raw.githubusercontent.com/Ikomia-dev/notebooks/main/examples/img/img_cat.jpg")
+wf.run_on(url="https://raw.githubusercontent.com/Ikomia-dev/notebooks/feat/new_readme/examples/img/img_cat.jpg")
 
 # Inspect your result
 display(algo.get_image_with_graphics())
@@ -84,10 +84,12 @@ wf = Workflow()
 
 # Add algorithm
 algo = wf.add_task(name="infer_torchvision_resnet", auto_connect=True)
-
 algo.set_parameters({
     "input_size": "224",
 })
+
+# Run directly on your image
+wf.run_on(url="https://raw.githubusercontent.com/Ikomia-dev/notebooks/main/examples/img/img_cat.jpg")
 
 # Inspect your result
 display(algo.get_image_with_graphics())
