@@ -61,6 +61,8 @@ class Resnet(dataprocess.CClassificationTask):
             self.set_param_object(ResnetParam())
         else:
             self.set_param_object(copy.deepcopy(param))
+        
+        self.model_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "weights")
 
     def get_progress_steps(self):
         # Function returning the number of progress steps for this process
@@ -106,6 +108,8 @@ class Resnet(dataprocess.CClassificationTask):
                     param.dataset = "Custom"
 
             use_torchvision = param.dataset != "Custom"
+            torch_dir_ori = torch.hub.get_dir()
+            torch.hub.set_dir(self.model_folder)
             self.model = models.resnet(model_name=param.model_name,
                                        use_pretrained=use_torchvision,
                                        classes=len(self.get_names()))
@@ -113,6 +117,7 @@ class Resnet(dataprocess.CClassificationTask):
                 self.model.load_state_dict(torch.load(param.model_weight_file, map_location=self.device))
 
             self.model.to(self.device)
+            torch.hub.set_dir(torch_dir_ori)
             param.update = False
 
         if self.is_whole_image_classification():
