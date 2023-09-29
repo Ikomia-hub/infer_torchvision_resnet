@@ -21,7 +21,7 @@
 
 ResNet inference model for image classification. 
 
-![Cat classification](https://raw.githubusercontent.com/Ikomia-hub/infer_torchvision_resnet/feat/new_readme/icons/output.jpg)
+![Cat classification](https://raw.githubusercontent.com/Ikomia-hub/infer_torchvision_resnet/main/icons/output.jpg)
 
 ## :rocket: Use with Ikomia API
 
