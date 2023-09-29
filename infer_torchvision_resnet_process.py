@@ -170,6 +170,8 @@ class ResnetFactory(dataprocess.CTaskFactory):
         self.info.icon_path = "icons/pytorch-logo.png"
         self.info.version = "1.2.0"
         self.info.keywords = "residual,cnn,classification"
+        self.info.algo_type = core.AlgoType.INFER
+        self.info.algo_tasks = "CLASSIFICATION"
 
     def create(self, param=None):
         # Create process object
