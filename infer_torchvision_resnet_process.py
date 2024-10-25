@@ -168,7 +168,7 @@ class ResnetFactory(dataprocess.CTaskFactory):
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Classification"
         self.info.icon_path = "icons/pytorch-logo.png"
-        self.info.version = "1.2.1"
+        self.info.version = "1.2.2"
         self.info.keywords = "residual,cnn,classification"
         self.info.algo_type = core.AlgoType.INFER
         self.info.algo_tasks = "CLASSIFICATION"
