@@ -20,7 +20,8 @@ class ResnetParam(core.CWorkflowTaskParam):
         self.dataset = 'ImageNet'
         self.input_size = 224
         self.model_weight_file = ''
-        self.class_file = os.path.dirname(os.path.realpath(__file__)) + "/models/imagenet_classes.txt"
+        self.class_file = os.path.dirname(os.path.realpath(
+            __file__)) + "/models/imagenet_classes.txt"
         self.update = False
 
     def set_values(self, params):
@@ -36,11 +37,11 @@ class ResnetParam(core.CWorkflowTaskParam):
         # Send parameters values to Ikomia application
         # Create the specific dict structure (string container)
         params = {
-                "model_name": self.model_name,
-                "dataset": self.dataset,
-                "input_size": str(self.input_size),
-                "model_weight_file": self.model_weight_file,
-                "class_file": self.class_file}
+            "model_name": self.model_name,
+            "dataset": self.dataset,
+            "input_size": str(self.input_size),
+            "model_weight_file": self.model_weight_file,
+            "class_file": self.class_file}
         return params
 
 
@@ -54,15 +55,17 @@ class Resnet(dataprocess.CClassificationTask):
         dataprocess.CClassificationTask.__init__(self, name)
         self.model = None
         # Detect if we have a GPU available
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device(
+            "cuda:0" if torch.cuda.is_available() else "cpu")
 
         # Create parameters class
         if param is None:
             self.set_param_object(ResnetParam())
         else:
             self.set_param_object(copy.deepcopy(param))
-        
-        self.model_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "weights")
+
+        self.model_folder = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "weights")
 
     def get_progress_steps(self):
         # Function returning the number of progress steps for this process
@@ -74,8 +77,9 @@ class Resnet(dataprocess.CClassificationTask):
 
         trs = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-            ])
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[
+                                 0.229, 0.224, 0.225])
+        ])
 
         input_tensor = trs(input_img).to(self.device)
         input_tensor = input_tensor.unsqueeze(0)
@@ -114,7 +118,8 @@ class Resnet(dataprocess.CClassificationTask):
                                        use_pretrained=use_torchvision,
                                        classes=len(self.get_names()))
             if param.dataset == "Custom":
-                self.model.load_state_dict(torch.load(param.model_weight_file, map_location=self.device))
+                self.model.load_state_dict(torch.load(
+                    param.model_weight_file, map_location=self.device))
 
             self.model.to(self.device)
             torch.hub.set_dir(torch_dir_ori)
@@ -124,7 +129,8 @@ class Resnet(dataprocess.CClassificationTask):
             image_in = self.get_input(0)
             src_image = image_in.get_image()
             predictions = self.predict(src_image, param.input_size)
-            sorted_data = sorted(zip(predictions.flatten().tolist(), self.get_names()), reverse=True)
+            sorted_data = sorted(
+                zip(predictions.flatten().tolist(), self.get_names()), reverse=True)
             confidences = [str(conf) for conf, _ in sorted_data]
             names = [name for _, name in sorted_data]
             self.set_whole_image_results(names, confidences)
@@ -137,7 +143,8 @@ class Resnet(dataprocess.CClassificationTask):
 
                 predictions = self.predict(roi_img, param.input_size)
                 class_index = predictions.argmax().item()
-                self.add_object(obj, class_index, predictions[class_index].item())
+                self.add_object(obj, class_index,
+                                predictions[class_index].item())
 
         # Step progress bar:
         self.emit_step_progress()
@@ -168,7 +175,9 @@ class ResnetFactory(dataprocess.CTaskFactory):
         # relative path -> as displayed in Ikomia application process tree
         self.info.path = "Plugins/Python/Classification"
         self.info.icon_path = "icons/pytorch-logo.png"
-        self.info.version = "1.2.2"
+        self.info.version = "2.0.0"
+        self.info.min_ikomia_version = "0.15.0"
+        self.info.min_python_version = "3.11.0"
         self.info.keywords = "residual,cnn,classification"
         self.info.algo_type = core.AlgoType.INFER
         self.info.algo_tasks = "CLASSIFICATION"
